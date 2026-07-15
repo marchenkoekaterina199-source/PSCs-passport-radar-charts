@@ -6,24 +6,20 @@ Unlike traditional visualization tools that plot continuous degradation curves, 
 To maintain a strict and intuitive geometric layout—where any spatial contraction toward the radar origin directly correlates with physical device performance degradation—specialized physics-based normalization transformations are executed during the ingestion pipeline:
 
 ### 1.1. Conventional PV Parameters
-For parameters where degradation causes a direct, bounded decay from the initial state (PCE, \(V_{oc}\), \(J_{sc}\), FF, and \(R_{sh}\)), a standard linear normalization path is used:
-\[\text{Parameter}_{rel} = \text{clip}\left(\frac{X_t}{X_0}, 0.0, 1.1\right)\]
+For parameters where degradation causes a direct, bounded decay from the initial state (PCE, Voc, Jsc, FF, and Rsh), a standard linear normalization path is used
 
-### 1.2. Relative Series Resistance (\(R_s\))
-In perovskite solar cells, severe contact degradation and interfacial moisture ingress cause the physical series resistance to expand exponentially. If plotted on a linear relative scale (\(R_s(t)/R_s(0)\)), severe failures would expand far beyond the radar bounds (e.g., 500%), distorting the visual scale of all other parameters. 
-To mitigate this scale distortion, this suite applies a bound-preserving mapping function that translates resistance growth into a readable, bounded coordinate interval:
-\[R_{s, rel} = \text{clip}\left(\frac{2}{\frac{R_{s,t}}{R_{s,0}} + 1}, 0.05, 1.1\right)\]
-* **Interpretation:** When \(R_{s,t} = R_{s,0}\) (no degradation), \(R_{s, rel} = 1.0\) (100% boundary). As resistance increases significantly (\(R_{s,t} \to \infty\)), \(R_{s, rel}\) smoothly approaches 0.0, drawing the radar vertex toward the center to signify degradation.
+### 1.2. Relative Series Resistance (Rs)
+In perovskite solar cells, severe contact degradation and interfacial moisture ingress cause the physical series resistance to expand exponentially. If plotted on a linear relative scale (Rs(t)/Rs(0)), severe failures would expand far beyond the radar bounds (e.g., 500%), distorting the visual scale of all other parameters. 
+To mitigate this scale distortion, this suite applies a bound-preserving mapping function that translates resistance growth into a readable, bounded coordinate interval
 
 ### 1.3. Hysteresis Index (HI)
-Aging-induced ion migration and charge accumulation artifacts typically increase the current-voltage hysteresis mismatch. To ensure that an expanding hysteresis loop visually contracts the device spatial footprint instead of expanding it, the operational tracking is inverted:
-\[HI_{rel} = \text{clip}\left(1.0 - (HI_t - HI_0), 0.05, 1.1\right)\]
+Aging-induced ion migration and charge accumulation artifacts typically increase the current-voltage hysteresis mismatch. To ensure that an expanding hysteresis loop visually contracts the device spatial footprint instead of expanding it, the operational tracking is inverted
 
 ---
 
 ## 2. Dynamic Label Positioning & Data Safety
 * **Contour-Adjacent Labeling:** Numeric percentage text strings are mapped strictly adjacent to the final valid measurement line contour (val + 0.08) to visually emphasize the exact physical geometry of the final degraded state.
-* **Collision Avoidance Algorithm:** When a specific parameter retains ideal performance (val > 0.92), the text bounding box dynamically retracts inward (val - 0.06) and inverts its color scheme to prevent any overlay collisions with the external parameter name typography (PCE, \(V_{oc}\), etc.).
+* **Collision Avoidance Algorithm:** When a specific parameter retains ideal performance (val > 0.92), the text bounding box dynamically retracts inward (val - 0.06) and inverts its color scheme to prevent any overlay collisions with the external parameter name typography (PCE, Voc), etc.).
 * **Dynamic Step Extraction:** The pipeline automatically parses the Excel headers to find all available time-step suffixes (`_0`, `_144`, `_720`, etc.). The code automatically scales to handle any arbitrary number of repeated discrete measurements.
 * **Missing Data Imputation:** If a device suffers from a corrupted baseline cell (X₀ is missing or `NaN`), the script automatically triggers a fallback sweep to establish the first available valid measurement as the normalization baseline (V₀), avoiding system crashes.
 
@@ -67,8 +63,7 @@ python plot_radars.py
 ## 5. Academic Citation & License
 This project is open-source software licensed under the **MIT License**. 
 
-If you use this visualization suite or the normalization methodology in your research, please include the corresponding code availability DOI citation within your manuscript's *Data Availability Statement*:
+If you use this visualization suite or the normalization methodology in your research, please include the corresponding code availability DOI citation within your manuscript's
 
-**Data Availability Statement Profile:**
-> The complete operational Python source code engineered for automated dataset normalization and multi-parameter discrete time-step radar plot visualization is publicly available on GitHub at `https://github.com[your-username]/[your-repo-name]` and is permanently archived under Digital Object Identifier (DOI) `https://doi.org.[XXXXXXX]`.
+
 
